@@ -31,22 +31,27 @@ class CachedNetworkAvifImage extends AvifImage {
     super.frameBuilder,
     super.loadingBuilder,
     Map<String, String>? headers,
+    String? cacheKey,
   }) : super(
           image: CachedNetworkAvifImageProvider(
             url,
             scale: scale,
             overrideDurationMs: overrideDurationMs,
             headers: headers,
+            cacheKey: cacheKey,
           ),
         );
 }
 
 class CachedNetworkAvifImageProvider extends NetworkAvifImage {
+  final String? cacheKey;
+
   CachedNetworkAvifImageProvider(
     super.url, {
     super.scale = 1.0,
     super.overrideDurationMs = -1,
     super.headers,
+    this.cacheKey,
   });
 
   @override
@@ -61,6 +66,7 @@ class CachedNetworkAvifImageProvider extends NetworkAvifImage {
         key,
         decode,
         chunkEvents,
+        cacheKey: cacheKey,
       ),
       scale: key.scale,
       debugLabel: key.url,
@@ -74,12 +80,14 @@ class CachedNetworkAvifImageProvider extends NetworkAvifImage {
   Future<AvifCodec> _loadAsync(
     NetworkAvifImage key,
     ImageDecoderCallback decode,
-    StreamController<ImageChunkEvent> chunkEvents,
-  ) async {
+    StreamController<ImageChunkEvent> chunkEvents, {
+    String? cacheKey,
+  }) async {
     assert(key == this);
 
     final stream = DefaultCacheManager().getImageFile(
       url,
+      key: cacheKey ?? url,
       headers: headers,
       withProgress: true,
     );
