@@ -1,3 +1,10 @@
+## 3.1.0
+
+* Update android binaries to support 16KB page size
+* Add accept header by default
+* Increase protobuf decoding size limit
+* Fix animation caching (Thanks @tahirdevelop)
+
 ## 3.0.0
 
 * Require Dart >= 3.4.0 and Flutter >= 3.22.0
